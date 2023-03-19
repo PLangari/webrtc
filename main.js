@@ -1,10 +1,16 @@
 import './style.css';
-
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  // your config
+  apiKey: "AIzaSyARb_odTt16K9nII4uaBD6-H8zgD_wmWK4",
+  authDomain: "signalingserver-7bb2e.firebaseapp.com",
+  projectId: "signalingserver-7bb2e",
+  storageBucket: "signalingserver-7bb2e.appspot.com",
+  messagingSenderId: "768368949541",
+  appId: "1:768368949541:web:c91074aa131e65e16302cc",
+  measurementId: "G-8WPL1YPJ1S"
 };
 
 if (!firebase.apps.length) {
@@ -12,6 +18,7 @@ if (!firebase.apps.length) {
 }
 const firestore = firebase.firestore();
 
+// stun servers to use for peer connection (ice candidates)
 const servers = {
   iceServers: [
     {
@@ -23,6 +30,7 @@ const servers = {
 
 // Global State
 const pc = new RTCPeerConnection(servers);
+// video streams
 let localStream = null;
 let remoteStream = null;
 
@@ -38,7 +46,10 @@ const hangupButton = document.getElementById('hangupButton');
 // 1. Setup media sources
 
 webcamButton.onclick = async () => {
+  console.log("webcam button clicked");
+  // permission to use webcam
   localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+  // stream to display webcam
   remoteStream = new MediaStream();
 
   // Push tracks from local stream to peer connection
@@ -49,6 +60,7 @@ webcamButton.onclick = async () => {
   // Pull tracks from remote stream, add to video stream
   pc.ontrack = (event) => {
     event.streams[0].getTracks().forEach((track) => {
+      // view other user's stream
       remoteStream.addTrack(track);
     });
   };
