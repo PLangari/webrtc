@@ -82,6 +82,8 @@ callButton.onclick = async () => {
 
   callInput.value = callDoc.id;
 
+  console.log(callInput.value);
+
   // Get candidates for caller, save to db
   pc.onicecandidate = (event) => {
     event.candidate && offerCandidates.add(event.candidate.toJSON());
@@ -118,6 +120,16 @@ callButton.onclick = async () => {
   });
 
   hangupButton.disabled = false;
+};
+
+hangupButton.onclick = () => {
+  pc.close();
+  hangupButton.disabled = true;
+  callButton.disabled = false;
+  answerButton.disabled = false;
+  webcamButton.disabled = false;
+  // close all streams
+  localStream.getTracks().forEach((track) => { track.stop(); });
 };
 
 // 3. Answer the call with the unique ID
